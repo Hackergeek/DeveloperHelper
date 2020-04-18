@@ -19,7 +19,7 @@ class HierarchyDetailView : FrameLayout {
         paint.strokeWidth = 3F
         paint
     }
-    private val parentpPaint: Paint by lazy {
+    private val parentPaint: Paint by lazy {
         val paint = Paint()
         paint.color = context.resources.getColor(R.color.colorAccentLight)
         paint.style = Paint.Style.STROKE
@@ -66,7 +66,7 @@ class HierarchyDetailView : FrameLayout {
             return
         }
         val bounds = parentHierarchyNode?.screenBounds
-        canvas?.drawRect(bounds, parentpPaint)
+        canvas?.drawRect(bounds, parentPaint)
 
     }
 

@@ -1,11 +1,13 @@
 package com.wrbug.developerhelper.ui.widget.layoutinfoview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import androidx.cardview.widget.CardView
+import com.elvishew.xlog.XLog
 import com.wrbug.developerhelper.R
 import de.blox.graphview.BaseGraphAdapter
 
@@ -13,6 +15,7 @@ class ViewTreeGraphAdapter(@NonNull val context: Context, @LayoutRes val layoutR
     BaseGraphAdapter<ViewTreeGraphAdapter.ViewHolder>(context, layoutRes) {
     private var listener: OnItemClickListener? = null
     override fun onCreateViewHolder(view: View?) = ViewHolder(view!!)
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(viewHolder: ViewHolder?, data: Any?, position: Int) {
         viewHolder?.run {
             val node = data as ViewTreeGraphNode
@@ -22,7 +25,14 @@ class ViewTreeGraphAdapter(@NonNull val context: Context, @LayoutRes val layoutR
                 listener?.onClick(node, position)
             }
             when {
-                node.selected -> cardView.setCardBackgroundColor(context.resources.getColor(R.color.colorAccent))
+                node.selected ->  {
+                    cardView.setCardBackgroundColor(context.resources.getColor(R.color.colorAccent))
+                    widgetTv.text = "${node.node.widget}\n" +
+                            if (node.node.resourceId.isNotEmpty()) "resourceId: ${node.node.resourceId}\n" else "" +
+                                    if (node.node.text.isNotEmpty()) "text: ${node.node.text}\n" else "" +
+                                            if (node.node.clickable) "clickable: true\n" else "" +
+                                                    if (node.node.longClickable) "longClickable: true" else ""
+                }
                 node.childSelected -> cardView.setCardBackgroundColor(context.resources.getColor(R.color.colorAccentLight))
                 else -> {
                     cardView.setCardBackgroundColor(context.resources.getColor(R.color.colorPrimary))

@@ -28,7 +28,6 @@ class DeveloperHelperAccessibilityService : AccessibilityService() {
     private val receiver = DeveloperHelperAccessibilityReceiver()
     private var nodeId = 0L
     private var currentAppInfo: ApkInfo? = null
-    private var topActivity: TopActivityInfo? = null
 
     companion object {
         internal var serviceRunning = false
@@ -71,10 +70,9 @@ class DeveloperHelperAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-
     }
 
-    fun readNode(): ArrayList<HierarchyNode> {
+    fun readNode(topActivityInfo: TopActivityInfo?): ArrayList<HierarchyNode> {
         val hierarchyNodes = arrayListOf<HierarchyNode>()
         nodeMap.clear()
         if (rootInActiveWindow != null) {
@@ -82,7 +80,12 @@ class DeveloperHelperAccessibilityService : AccessibilityService() {
                 currentAppInfo = AppInfoManager.getAppByPackageName(toString())
             }
             val node = getDecorViewNode(rootInActiveWindow)
-            readNodeInfo(hierarchyNodes, node ?: rootInActiveWindow, null)
+            readNodeInfo(
+                hierarchyNodes,
+                node ?: rootInActiveWindow,
+                null,
+                topActivityInfo
+            )
         }
         return hierarchyNodes
     }
@@ -133,7 +136,8 @@ class DeveloperHelperAccessibilityService : AccessibilityService() {
     private fun readNodeInfo(
         hierarchyNodes: ArrayList<HierarchyNode>,
         accessibilityNodeInfo: AccessibilityNodeInfo,
-        parentNode: HierarchyNode?
+        parentNode: HierarchyNode?,
+        topActivityInfo: TopActivityInfo?
     ) {
         if (accessibilityNodeInfo.childCount == 0) {
             return
@@ -161,7 +165,7 @@ class DeveloperHelperAccessibilityService : AccessibilityService() {
             child.viewIdResourceName?.let {
                 node.resourceId = it
                 if (it.contains(":id")) {
-                    node.idHex = topActivity?.viewIdHex?.get(it.substring(it.indexOf("id")))
+                    node.idHex = topActivityInfo?.viewIdHex?.get(it.substring(it.indexOf("id")))
                 }
             }
             var text = ""
@@ -196,7 +200,12 @@ class DeveloperHelperAccessibilityService : AccessibilityService() {
             node.password = child.isPassword
             node.scrollable = child.isScrollable
             node.selected = child.isSelected
-            readNodeInfo(hierarchyNodes, child, node)
+            readNodeInfo(
+                hierarchyNodes,
+                child,
+                node,
+                topActivityInfo
+            )
         }
     }
 
@@ -207,9 +216,8 @@ class DeveloperHelperAccessibilityService : AccessibilityService() {
             ShellManager.getTopActivity(object : Callback<TopActivityInfo?> {
 
                 override fun onSuccess(data: TopActivityInfo?) {
-                    topActivity = data
-                    val nodesInfo = readNode()
-                    HierarchyActivity.start(context, currentAppInfo, nodesInfo, topActivity)
+                    val nodesInfo = readNode(data)
+                    HierarchyActivity.start(context, currentAppInfo, nodesInfo, data)
                 }
             })
 

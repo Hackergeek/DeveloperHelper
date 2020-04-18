@@ -16,7 +16,7 @@ class OnActResultEventDispatcherFragment : Fragment() {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val callback = this.mCallbacks.get(requestCode) as ActivityResultCallback
         this.mCallbacks.remove(requestCode)

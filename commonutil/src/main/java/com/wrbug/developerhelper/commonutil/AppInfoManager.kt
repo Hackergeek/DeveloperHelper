@@ -14,8 +14,8 @@ object AppInfoManager {
         val apkMap = HashMap<String, ApkInfo>()
         val pManager = CommonUtils.application.packageManager
         // 获取手机内所有应用
-        val paklist = pManager.getInstalledPackages(0)
-        for (packageInfo in paklist) {
+        val packageList = pManager.getInstalledPackages(0)
+        for (packageInfo in packageList) {
             apkMap[packageInfo.packageName] = ApkInfo(packageInfo, packageInfo.applicationInfo)
         }
         return apkMap

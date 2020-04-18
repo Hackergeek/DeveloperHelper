@@ -84,6 +84,10 @@ class MainActivity : BaseVMActivity<MainViewModel>() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun getViewModel(): MainViewModel {
         return obtainViewModel(MainViewModel::class.java)
     }
@@ -164,10 +168,6 @@ class MainActivity : BaseVMActivity<MainViewModel>() {
             checkUpdate(true)
         }
         .create().show()
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-    }
 
     private fun checkUpdate(showSnack: Boolean = false) {
         if (showSnack) {

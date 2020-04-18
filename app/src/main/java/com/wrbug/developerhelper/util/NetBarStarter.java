@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import com.github.megatronking.netbare.NetBare;
 import com.github.megatronking.netbare.NetBareConfig;
-import com.github.megatronking.netbare.http.HttpInjectInterceptor;
 import com.github.megatronking.netbare.http.HttpInterceptorFactory;
 import com.github.megatronking.netbare.ssl.JKS;
 
 import java.util.List;
 
 public class NetBarStarter {
-    private Object mlock = new Object();
+    private Object mLock = new Object();
     private static NetBarStarter instance;
     private NetBare netBare;
 
